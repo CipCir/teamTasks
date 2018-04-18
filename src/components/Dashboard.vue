@@ -6,9 +6,10 @@
         <h4>Tasks</h4>
       </li>
       <li v-for="task in tasks" v-bind:key="task.id" class="collection-item">        
-        {{task.task_name}} <div class="chip">{{task.task_owner}}</div>
+        {{task.task_name}} 
+        <div class="chip">{{task.task_owner}}</div>
         <router-link class="secondary-content" v-bind:to="{name:'edit-task',params:{task_id:task.id}}">
-          <i class="fa fa-eye"></i>
+          <i class="fa fa-pencil"></i>
         </router-link>
       </li>
     </ul>
@@ -35,8 +36,7 @@ export default {
       .collection("Tasks")
       .orderBy("tOwner")
       .onSnapshot(querySnapshot => {
-        this.tasks=[];
-        
+        this.tasks = [];
         querySnapshot.forEach(doc => {
           const data = {
             id: doc.id,
@@ -45,7 +45,6 @@ export default {
             task_owner: doc.data().tOwner,
             task_status: doc.data().tStatus
           };
-          
           this.tasks.push(data);
         });
       });

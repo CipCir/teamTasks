@@ -5,26 +5,26 @@
 <form @submit.prevent="editTask" class="col s12">
   <div class="row">
     <div class="input-field col s12">
-      <input type="text" v-model="task_name" required>      
+      <!-- <input type="text" v-model="task_name" required>       -->
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
-      <input type="text" v-model="task_deadline" required>      
+      <!-- <input type="text" v-model="task_deadline" required>       -->
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
-      <input type="text" v-model="task_owner" required>      
+      <!-- <input type="text" v-model="task_owner" required>       -->
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
-      <input type="text" v-model="task_status" required>      
+      <!-- <input type="text" v-model="task_status" required>       -->
     </div>
   </div>
   <button type="submit" class="btn">Save</button>
-  <router-link to="/" class="btn grey">Cancel</router-link>
+  <router-link to="/" class="btn grey">Cancel<router-link>
 </form>
       </div>
   </div>
@@ -46,15 +46,15 @@ export default {
   beforeRouteEnter(to, from, next) {
     db
       .collection("tasks")
-      .where("doc", "==", to.params.task_id)
+      .where("id", "==", to.params.task_id)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
           next(vm => {
-            vm.task_name = doc.data().tName;
-            vm.task_deadline = doc.data().tDeadline;
-            vm.task_owner = doc.data().tOwner;
-            vm.task_status = doc.data().tStatus;
+            // vm.task_name = doc.data().tName;
+            // vm.task_deadline = doc.data().tDeadline;
+            // vm.task_owner = doc.data().tOwner;
+            // vm.task_status = doc.data().tStatus;
           });
         });
       });
@@ -66,19 +66,18 @@ export default {
     fetchData() {
       db
         .collection("tasks")
-        .where("ID", "==", to.params.task_id)
+        .where("id", "==", to.params.task_id)
         .get()
         .then(querySnapshot => {
           querySnapshot.forEach(doc => {            
-              this.task_name = doc.data().tName;
-              this.task_deadline = doc.data().tDeadline;
-              this.task_owner = doc.data().tOwner;
-              this.task_status = doc.data().tStatus;            
+              // this.task_name = doc.data().tName;
+              // this.task_deadline = doc.data().tDeadline;
+              // this.task_owner = doc.data().tOwner;
+              // this.task_status = doc.data().tStatus;            
           });
         });
-    },
-  updateTask() {
-    return null
-  }
-  }}
+    }
+  },
+  updateTask() {}
+};
 </script>
