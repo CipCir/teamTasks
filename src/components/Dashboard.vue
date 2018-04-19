@@ -1,6 +1,5 @@
 <template>
-  <div id="dashboard">
-    <h3>Dashboard</h3>
+  <div id="dashboard">    
     <ul class="collection with-header">
       <li class="collection-header">
         <h4>Tasks</h4>
@@ -18,6 +17,7 @@
         <i class="fa fa-plus"></i>
       </router-link>
     </div>
+    <div style="margin-bottom:100px"></div>
   </div>
 </template>
 

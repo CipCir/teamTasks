@@ -2,29 +2,25 @@
   <div id="edit-task">
       <h3>Edit task</h3>
       <div class="row">
-<form @submit.prevent="updateTask" class="col s12">
+<form @submit.prevent="editTask" class="col s12">
   <div class="row">
     <div class="input-field col s12">
-      <input placeholder="Task name" type="text" v-model="task_name" required>      
-      <label class="active">Name:</label>
+      <input type="text" v-model="task_name" required>      
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
-      <input type="text" placeholder="Task deadline" v-model="task_deadline" required>      
-      <label class="active">Deadline:</label>
+      <input type="text" v-model="task_deadline" required>      
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
-      <input type="text" placeholder="Task owner" v-model="task_owner" required>      
-      <label class="active">Owner:</label>
+      <input type="text" v-model="task_owner" required>      
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
-      <input type="text" placeholder="Task status" v-model="task_status" required>      
-      <label class="active">Status:</label>
+      <input type="text" v-model="task_status" required>      
     </div>
   </div>
   <button type="submit" class="btn">Save</button>
@@ -71,40 +67,31 @@ export default {
         .get()
         .then(doc => {
           // querySnapshot.forEach(doc => {
-          this.task_name = doc.data().tName;
-          this.task_deadline = doc.data().tDeadline;
-          this.task_owner = doc.data().tOwner;
-          this.task_status = doc.data().tStatus;
+            this.task_name = doc.data().tName;
+            this.task_deadline = doc.data().tDeadline;
+            this.task_owner = doc.data().tOwner;
+            this.task_status = doc.data().tStatus;
           // });
         });
     },
     updateTask() {
-      db
-        .collection("Tasks")
-        .doc(this.$route.params.task_id)
-        .set({
-            tName:this.task_name,
-            tDeadline:this.task_deadline,
-            tOwner:this.task_owner,
-            tStatus:this.task_status
-        })
-        .then(docRef => this.$router.push("/"))
-        .catch(function(error) {
-          console.error("Error writing document: ", error);
-        });
+      return null;
     }
-  },
+  }
+  ,
   created() {
-    db
-      .collection("Tasks")
-      .doc(this.$route.params.task_id)
-      .get()
-      .then(doc => {
-        this.task_name = doc.data().tName;
-        this.task_deadline = doc.data().tDeadline;
-        this.task_owner = doc.data().tOwner;
-        this.task_status = doc.data().tStatus;
-      });
+   db
+        .collection("Tasks")
+        .doc("1PMNmblUFjSWg3OQm0F3")
+        .get()
+        .then(doc => {
+          // querySnapshot.forEach(doc => {
+            this.task_name = doc.data().tName;
+            this.task_deadline = doc.data().tDeadline;
+            this.task_owner = doc.data().tOwner;
+            this.task_status = doc.data().tStatus;
+          // });
+        });
   }
 };
 </script>
