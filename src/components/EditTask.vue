@@ -41,12 +41,13 @@ export default {
       task_deadline: null,
       task_owner: null,
       task_status: null
-    }
+    };
   },
   beforeRouteEnter(to, from, next) {
+    console.log(to.params.task_id);
     db
-      .collection("tasks")
-      .where("doc", "==", to.params.task_id)
+      .collection("Tasks")
+      .doc(to.params.task_id)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -60,25 +61,26 @@ export default {
       });
   },
   watch: {
-    '$route': "fetchData"
+    $route: "fetchData"
   },
   methods: {
     fetchData() {
       db
-        .collection("tasks")
-        .where("ID", "==", to.params.task_id)
+        .collection("Tasks")
+        .doc(to.params.task_id)
         .get()
         .then(querySnapshot => {
-          querySnapshot.forEach(doc => {            
-              this.task_name = doc.data().tName;
-              this.task_deadline = doc.data().tDeadline;
-              this.task_owner = doc.data().tOwner;
-              this.task_status = doc.data().tStatus;            
+          querySnapshot.forEach(doc => {
+            this.task_name = doc.data().tName;
+            this.task_deadline = doc.data().tDeadline;
+            this.task_owner = doc.data().tOwner;
+            this.task_status = doc.data().tStatus;
           });
         });
     },
-  updateTask() {
-    return null
+    updateTask() {
+      return null;
+    }
   }
-  }}
+};
 </script>

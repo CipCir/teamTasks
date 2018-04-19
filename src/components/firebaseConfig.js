@@ -3,6 +3,6 @@ export default {
     authDomain: "teamtasks-2ab2c.firebaseapp.com",
     databaseURL: "https://teamtasks-2ab2c.firebaseio.com",
     projectId: "teamtasks-2ab2c",
-    storageBucket: "",
+    storageBucket: "teamtasks-2ab2c.appspot.com",
     messagingSenderId: "553500330274"
 }
