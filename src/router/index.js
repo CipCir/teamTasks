@@ -71,9 +71,9 @@ router.beforeEach((to, from, next) => {
       // Go to login
       next({
         path: "/login",
-        query: {
-          redirect: to.fullPath
-        }
+        // query: {
+        //   redirect: to.fullPath
+        // }
       });
     } else {
       // Proceed to route
@@ -83,12 +83,20 @@ router.beforeEach((to, from, next) => {
     // Check if NO logged user
     if (firebase.auth().currentUser) {
       // Go to login
-      next({
-        path: "/",
-        query: {
-          redirect: to.fullPath
-        }
-      });
+      // console.log(to)
+      // console.log(from)
+      // console.log(next)
+      if (to.name=="login"){
+        next({
+          path: '/',
+          query: {
+            redirect: to.fullPath
+          }
+        });
+      }else{
+        next();
+      }
+      
     } else {
       // Proceed to route
       next();

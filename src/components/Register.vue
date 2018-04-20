@@ -38,7 +38,8 @@ export default {
   },
   methods: {
     register: function(e) {
-      if(this.email.indexOf('ciprian.ciresaru@')!=-1){
+      var allowedUsers=['ciprian.ciresaru@','ovidiu.calburean@','ionut.tuns@','anamaria.taras@']
+      if(allowedUsers.indexOf( this.email)!=-1){
         firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)

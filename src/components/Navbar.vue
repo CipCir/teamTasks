@@ -1,8 +1,9 @@
 <template>
   <nav>
-    <div class="nav-wrapper green">      
-      <ul id="nav-mobile" class="right">
-        <li v-if="!isLoggedIn"><router-link to="/" >View Dashboard</router-link></li>
+    <div class="nav-wrapper green">
+        <span style="margin-left:5px" class="brand-logo left hide-on-small-only">IqConcepts team tasks</span>
+      <ul id="nav-mobile" class="right">       
+        <li><router-link to="/" >View Dashboard</router-link></li>
         <li v-if="isLoggedIn"><router-link to="/view/cols" class="">View Cols</router-link></li>  
         <li v-if="!isLoggedIn"><router-link to="/login" class="">Login</router-link></li>
         <li v-if="!isLoggedIn"><router-link to="/register" class="">Register</router-link></li>
