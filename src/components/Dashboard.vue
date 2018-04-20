@@ -9,7 +9,7 @@
         <div class="chip">{{task.task_owner}}</div>
         <router-link class="secondary-content" v-bind:to="{name:'edit-task',params:{task_id:task.id}}">
           <i class="fa fa-pencil"></i>
-        </router-link>
+        </router-link>         
       </li>
     </ul>
     <div class="fixed-action-btn">
@@ -17,8 +17,9 @@
         <i class="fa fa-plus"></i>
       </router-link>
     </div>
-    <div style="margin-bottom:100px"></div>
+    <div style="margin-bottom:100px"></div>    
   </div>
+  
 </template>
 
 <script>
