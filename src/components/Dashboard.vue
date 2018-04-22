@@ -1,18 +1,19 @@
 <template>
-  <div id="dashboard">    
+  <div id="dashboard" class="container">    
     <ul class="collection with-header">
       <li class="collection-header">
         <h4>Tasks</h4>
       </li>
-      <li v-for="task in tasks" v-bind:key="task.id" class="collection-item">        
-        {{task.task_name}} 
+      <li v-for="task in tasks" v-bind:key="task.id" class="collection-item row">        
+        <div class="col m3">{{task.task_name}}</div>
         <div class="chip">{{task.task_owner}}</div>
-        <router-link class="secondary-content" v-bind:to="{name:'edit-task',params:{task_id:task.id}}">
+        <router-link v-if="isLoggedIn" class="secondary-content" v-bind:to="{name:'edit-task',params:{task_id:task.id}}">
           <i class="fa fa-pencil"></i>
         </router-link>         
       </li>
     </ul>
-    <div class="fixed-action-btn">
+
+    <div v-if="isLoggedIn" class="fixed-action-btn">
       <router-link to ="/new" class="btn-floating btn-large red">
         <i class="fa fa-plus"></i>
       </router-link>
@@ -24,15 +25,21 @@
 
 <script>
 import db from "./firebaseInit";
+import firebase from 'firebase';
 
 export default {
   name: "dashboard",
   data() {
     return {
+      isLoggedIn: false,
       tasks: []
+       
     };
   },
   created() {
+    if (firebase.auth().currentUser) {
+      this.isLoggedIn = true;     
+    };
     db
       .collection("Tasks")
       .orderBy("tOwner")
