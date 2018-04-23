@@ -6,7 +6,7 @@
         <li><router-link to="/" >View Dashboard</router-link></li>
         <li v-if="isLoggedIn"><router-link to="/view/cols" class="">View per owener</router-link></li>  
         <li v-if="!isLoggedIn"><router-link to="/login" class="">Login</router-link></li>
-        <li v-if="!isLoggedIn"><router-link to="/register" class="">Register</router-link></li>
+        <!-- <li v-if="!isLoggedIn"><router-link to="/register" class="">Register</router-link></li> -->
         <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button></li>
       </ul>
     </div>

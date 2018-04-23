@@ -27,14 +27,14 @@ let router = new Router({
         requiresGuest: true
       }
     },
-    {
-      path: "/register",
-      name: "register",
-      component: Register,
-      meta: {
-        requiresGuest: true
-      }
-    },
+    // {
+    //   path: "/register",
+    //   name: "register",
+    //   component: Register,
+    //   meta: {
+    //     requiresGuest: true
+    //   }
+    // },
     {
       path: "/new",
       name: "new-task",
@@ -82,10 +82,7 @@ router.beforeEach((to, from, next) => {
   } else if (to.matched.some(record => record.meta.requiresGuest)) {
     // Check if NO logged user
     if (firebase.auth().currentUser) {
-      // Go to login
-      // console.log(to)
-      // console.log(from)
-      // console.log(next)
+      // Go to login      
       if (to.name=="login"){
         next({
           path: '/',
