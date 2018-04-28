@@ -1,61 +1,143 @@
 <template>
-  <div id="dashboard" class="container">    
-    <ul class="collection with-header">
-      <li class="collection-header">
-        <h4>Tasks</h4>
-      </li>
-      <li v-for="task in tasks" v-bind:key="task.id" class="collection-item row">        
-        <div class="col m3">{{task.task_name}}</div>
-        <div class="chip">{{task.task_owner}}</div>
+  <div id="dashboard" style="margin: 0px 50px;">    
+    <div class="row teal white-text hide-on-small-only">      
+        <h6 class="col m2 s12">Task name</h6>
+        <h6 class="col m2 s12">Description</h6>
+        <h6 class="col m2 s12">Status</h6>
+        <h6 class="col m2 s12">Deadline</h6>
+        <h6 class="col m2 s12"><span class="chip">Owner</span></h6>
+        <h6 class="secondary-content white-text">Edit</h6>
+      </div>
+      <div v-bind:class="[{'Completed':task.task_completed},{'Canceled':task.task_canceled},{'inProgress':task.task_inProgress}]" v-for="task in tasks" v-bind:key="task.id" class="row">        
+        <div class="col m2 s12"><b>{{task.task_name}}</b></div>
+        <div class="col m2 s12" v-html="task.task_description"></div>
+        <div class="col m2 s12"><i>{{task.task_status}}</i></div>
+        <div class="col m2 s12">{{task.task_deadline}}</div>
+        <div class="col m2 s12"><div class="chip">{{task.task_owner}}</div></div>
         <router-link v-if="isLoggedIn" class="secondary-content" v-bind:to="{name:'edit-task',params:{task_id:task.id}}">
-          <i class="fa fa-pencil"></i>
+          <i class="fas fa-edit"></i>
         </router-link>         
-      </li>
-    </ul>
+      </div>    
 
     <div v-if="isLoggedIn" class="fixed-action-btn">
       <router-link to ="/new" class="btn-floating btn-large red">
         <i class="fa fa-plus"></i>
       </router-link>
     </div>
-    <div style="margin-bottom:100px"></div>    
+    <div style="margin-bottom:100px"></div> 
+
+    <div v-if="isLoggedIn" class="fixed-action-btn" style="left:23px">
+    <span data-target="slide-out" class="sidenav-trigger btn-floating btn-large">
+      <i class="fas fa-eye"></i>
+    </span>
+    </div>
+
+    <ul id="slide-out" class="sidenav" style="width: 50vw;">
+      <h5>Updates:</h5>
+     <li v-for="log in logData" class="container grey"  v-bind:key="log.id" style="margin-top: 5px;line-height: unset">
+       Task: <b>{{log.log_name}}</b><br/>
+       Updated: {{log.log_date}}<br/>
+       By: {{log.log_user}}<br/>
+        <span v-for="update in log.log_updated" v-bind:key="update.id">
+         <b>{{update.campName}}</b> > {{update.campValues}}<br/>
+        </span>
+     </li>
+    </ul>
   </div>
   
 </template>
 
 <script>
 import db from "./firebaseInit";
-import firebase from 'firebase';
+import firebase from "firebase";
 
 export default {
   name: "dashboard",
   data() {
     return {
       isLoggedIn: false,
-      tasks: []
-       
+      tasks: [],
+      logData: []
     };
   },
   created() {
     if (firebase.auth().currentUser) {
-      this.isLoggedIn = true;     
-    };
+      this.isLoggedIn = true;
+    }
     db
       .collection("Tasks")
-      .orderBy("tOwner")
+      .orderBy("tStatus")
       .onSnapshot(querySnapshot => {
         this.tasks = [];
         querySnapshot.forEach(doc => {
           const data = {
             id: doc.id,
             task_name: doc.data().tName,
+            task_description: doc.data().tDescription.replace(/\n/g, "<br/>"),
             task_deadline: doc.data().tDeadline,
             task_owner: doc.data().tOwner,
-            task_status: doc.data().tStatus
+            task_status: doc.data().tStatus,
+            task_completed: doc.data().tStatus == "Completed",
+            task_canceled: doc.data().tStatus == "Canceled",
+            task_inProgress: doc.data().tStatus == "In progress"
           };
           this.tasks.push(data);
         });
       });
+
+    db
+    .collection("Log")
+    .orderBy("date")
+    .onSnapshot(querySnapshot => {
+      this.logData = [];
+      var logDataObj = [];
+
+      querySnapshot.forEach(doc => {
+        logDataObj = [];
+        const data = {
+          id: doc.id,
+          log_date: doc.data().date,
+          log_name: doc.data().tName,
+          log_updated: logDataObj,
+          log_user: doc.data().user
+        };
+        var logUpdates = doc.data().updated;
+        logUpdates.split("||").forEach(camp => {
+          camp.split(":");
+          logDataObj.push({
+            campName: camp.split(":")[0],
+            campValues:
+              "from " +
+              camp.split(":")[1].split("##")[0] +
+              " to " +
+              camp.split(":")[1].split("##")[1]
+          });
+        });
+        this.logData.push(data);
+      });
+    });
+  },
+  mounted() {
+    $(".sidenav").sidenav();
   }
 };
 </script>
+
+<style>
+.Completed {
+  opacity: 0.7;
+  background: #e2ddde !important;
+}
+.Canceled > div {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+.inProgress {
+  background: #d6e9fd !important;
+}
+.secondary-content {
+  margin-right: 5px;
+}
+</style>
+
+

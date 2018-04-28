@@ -12,14 +12,14 @@
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input type="text" placeholder="Task details" v-model="task_details"
-              required>
-            <label class="active">Details:</label>
+            <textarea id="textarea1" placeholder="Task details" v-model="task_details"
+              required />
+            <label for="textarea1" class="active">Details:</label>
           </div>
-        </div>
+        </div>        
         <div class="row">
           <div class="input-field col s12">
-            <input type="text" placeholder="Task deadline"
+            <input type="date" placeholder="Task deadline"
               v-model="task_deadline" required>
             <label class="active">Deadline:</label>
           </div>
@@ -35,19 +35,22 @@
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input type="text" placeholder="Task status" v-model="task_status"
-              required>
+           <select style="display:block" v-model="task_status">
+              <option v-for="status in Statuses" v-bind:key="status.id"
+                v-bind:value="status">{{status}}</option>
+            </select>
             <label class="active">Status:</label>
           </div>
         </div>
         <button type="submit" class="btn">Save</button>
-        <router-link to="/" class="btn grey">Cancel</router-link>
+        <router-link to="/view/cols" class="btn grey">Cancel</router-link>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import firebase from "firebase";
 import db from "./firebaseInit";
 
 export default {
@@ -59,7 +62,13 @@ export default {
       task_deadline: null,
       task_owner: null,
       task_status: null,
-      Owners: []
+      orig_task_name: null,
+      orig_task_details: null,
+      orig_task_deadline: null,
+      orig_task_owner: null,
+      orig_task_status: null,
+      Owners: [],
+      Statuses: []
     };
   },
   methods: {
@@ -74,7 +83,70 @@ export default {
           tOwner: this.task_owner,
           tStatus: this.task_status
         })
-        .then(docRef => this.$router.push("/"))
+        .then(docRef => {
+          var ChangedInfo = "";
+          if (this.orig_task_name != this.task_name) {
+            ChangedInfo =
+              ChangedInfo +
+              "Task name:" +
+              this.orig_task_name +
+              "##" +
+              this.task_name +
+              "||";
+          }
+          if (this.orig_task_details != this.task_details) {
+            ChangedInfo =
+              ChangedInfo +
+              "Details:" +
+              this.orig_task_details +
+              "##" +
+              this.task_details +
+              "||";
+          }
+          if (this.orig_task_deadline != this.task_deadline) {
+            ChangedInfo =
+              ChangedInfo +
+              "Deadline:" +
+              this.orig_task_deadline +
+              "##" +
+              this.task_deadline +
+              "||";
+          }
+          if (this.orig_task_owner != this.task_owner) {
+            ChangedInfo =
+              ChangedInfo +
+              "Owner:" +
+              this.orig_task_owner +
+              "##" +
+              this.task_owner +
+              "||";
+          }
+          if (this.orig_task_status != this.task_status) {
+            ChangedInfo =
+              ChangedInfo +
+              "Status:" +
+              this.orig_task_status +
+              "##" +
+              this.task_status +
+              "||";
+          }
+          //  console.log(ChangedInfo.slice(0,-2))
+          //log the change
+          if (ChangedInfo != "") {
+            db
+              .collection("Log")
+              .add({
+                date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                tName: this.task_name,
+                updated: ChangedInfo.slice(0, -2),
+                user: firebase.auth().currentUser.email
+              })
+              .catch(function(error) {
+                console.error("Error adding document: ", error);
+              });
+          }
+          this.$router.push("/view/cols");
+        })
         .catch(function(error) {
           console.error("Error writing document: ", error);
         });
@@ -91,18 +163,48 @@ export default {
         this.task_deadline = doc.data().tDeadline;
         this.task_owner = doc.data().tOwner;
         this.task_status = doc.data().tStatus;
+        this.orig_task_name = this.task_name;
+        this.orig_task_details = this.task_details;
+        this.orig_task_deadline = this.task_deadline;
+        this.orig_task_owner = this.task_owner;
+        this.orig_task_status = this.task_status;
       });
 
-    //get users
-    db
-      .collection("Owners")
+    var ListRef = db.collection("DropDowns");
+
+    ListRef.doc("Owners")
       .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          // console.log(doc.id)
-          this.Owners.push(doc.id);
-        });
+      .then(doc => {
+        //console.log(doc.data().List.split("#"))
+        doc
+          .data()
+          .List.split("#")
+          .forEach(LstItem => {
+            //console.log(user)
+            this.Owners.push(LstItem);
+          });
+      });
+
+    ListRef.doc("Statuses")
+      .get()
+      .then(doc => {
+        //console.log(doc.data().List.split("#"))
+        doc
+          .data()
+          .List.split("#")
+          .forEach(LstItem => {
+            //console.log(user)
+            this.Statuses.push(LstItem);
+          });
       });
   }
 };
-</script>>
+</script>
+
+<style>
+textarea {
+  margin-top: 10px;
+  height: 107px;
+}
+</style>
+

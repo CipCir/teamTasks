@@ -43,8 +43,9 @@ export default {
         .then(
           user => {
             //alert(`You are logged in as ${user.email}`);            
-            this.$router.go({ path: this.$router.path });
+            //this.$router.go({ path: this.$router.path });
             M.toast({ html: `You are logged in as ${user.email}` });
+            this.$router.go({ path: "/view/cols" });
             //this.$router.push("/")
           },
           err => {
@@ -56,3 +57,9 @@ export default {
   }
 };
 </script>
+<style>
+input{
+  border-color: white !important;
+}
+</style>
+

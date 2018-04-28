@@ -85,7 +85,7 @@ router.beforeEach((to, from, next) => {
       // Go to login      
       if (to.name=="login"){
         next({
-          path: '/',
+          path: '/view/cols',
           query: {
             redirect: to.fullPath
           }
