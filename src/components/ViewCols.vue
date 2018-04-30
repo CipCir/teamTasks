@@ -6,7 +6,7 @@
       </router-link>
     </div>
     <div class="row">
-       <div style="background: #c6f3e3;min-height:100vh" class="col m4 s12">
+       <div style="background: #c6f3e3" class="col m4 s12">
         <center><h3>Cip</h3></center>
         <!-- vue component structure -->
         <div v-bind:class="[{'Completed':task.task_completed},{'Canceled':task.task_canceled}]" v-for="task in ViewCat1" v-bind:key="task.id" class="col s6">
@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div style="background: #c6eef3;min-height:100vh" class="col m4 s12">
+      <div style="background: #c6eef3" class="col m4 s12">
         <center><h3>Pipo</h3></center>
         <!-- vue component structure -->
         <div v-bind:class="[{'Completed':task.task_completed},{'Canceled':task.task_canceled}]" v-for="task in ViewCat2" v-bind:key="task.id" class="col s6">
@@ -66,7 +66,7 @@
           </div>
         </div>
       </div>
-      <div style="background: #eab7ac;min-height:100vh" class="col m4 s12">
+      <div style="background: #eab7ac" class="col m4 s12">
         <center><h3>Ana</h3></center>
         <!-- vue component structure -->
         <div v-bind:class="[{'Completed':task.task_completed},{'Canceled':task.task_canceled}]" v-for="task in ViewCat3" v-bind:key="task.id" class="col s6">
@@ -101,6 +101,7 @@
 </template>
 
 <script>
+import firebase from "firebase";
 import db from "./firebaseInit";
 
 export default {
@@ -113,7 +114,8 @@ export default {
   created() {
     db
       .collection("Tasks")
-      .orderBy("tStatus")
+      //.orderBy("tStatus", "desc")
+      .where("tStatus", "==", "In progress")
       .onSnapshot(querySnapshot => {
         this.tasks = [];
         querySnapshot.forEach(doc => {
@@ -125,13 +127,8 @@ export default {
             task_owner: doc.data().tOwner,
             task_status: doc.data().tStatus,
             task_completed: doc.data().tStatus == "Completed",
-            task_canceled:doc.data().tStatus == "Canceled"
+            task_canceled: doc.data().tStatus == "Canceled"
           };
-          // if (data.task_owner=="Cip"){
-          //   this.tasksCip.push(data);
-          // }else{
-          //   this.tasksOthers.push(data);
-          // }
           this.tasks.push(data);
         });
       });
@@ -162,24 +159,39 @@ export default {
           .update({
             tStatus: "Completed"
           })
-          //.then(docRef => task.task_completed = true)
+          .then(docRef => {
+            db
+              .collection("Log")
+              .add({
+                date: new Date().toString().slice(0,9) +" "+new Date(new Date()).toString().split(' ')[4],
+                tName: task.task_name,
+                updated:
+                  "Status:" +
+                  task.task_status +
+                  "##Completed",
+                user: firebase.auth().currentUser.email
+              })
+              .catch(function(error) {
+                console.error("Error adding document ChangedInfo: ", error);
+              });
+          })
           .catch(function(error) {
-            console.error("Error writing document: ", error);
+            console.error("Error writing document CompleteTask: ", error);
           });
       }
     }
   }
 };
 </script>
-<style>
+<style scoped>
 .card-content {
   padding: 10px !important;
 }
 .Completed {
   opacity: 0.7;
 }
-.Canceled{
- text-decoration: line-through;
+.Canceled {
+  text-decoration: line-through;
   opacity: 0.5;
 }
 .row {

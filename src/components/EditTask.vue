@@ -52,6 +52,7 @@
 <script>
 import firebase from "firebase";
 import db from "./firebaseInit";
+import fireList from "./fireLists";
 
 export default {
   name: "edit-task",
@@ -66,9 +67,9 @@ export default {
       orig_task_details: null,
       orig_task_deadline: null,
       orig_task_owner: null,
-      orig_task_status: null,
-      Owners: [],
-      Statuses: []
+      orig_task_status: null,      
+      Owners:fireList.ownersList,
+      Statuses:fireList.statusesList
     };
   },
   methods: {
@@ -136,13 +137,13 @@ export default {
             db
               .collection("Log")
               .add({
-                date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                date: new Date().toString().slice(0,9) +" "+new Date(new Date()).toString().split(' ')[4],
                 tName: this.task_name,
                 updated: ChangedInfo.slice(0, -2),
                 user: firebase.auth().currentUser.email
               })
               .catch(function(error) {
-                console.error("Error adding document: ", error);
+                console.error("Error adding document ChangedInfo: ", error);
               });
           }
           this.$router.push("/view/cols");
@@ -168,35 +169,7 @@ export default {
         this.orig_task_deadline = this.task_deadline;
         this.orig_task_owner = this.task_owner;
         this.orig_task_status = this.task_status;
-      });
-
-    var ListRef = db.collection("DropDowns");
-
-    ListRef.doc("Owners")
-      .get()
-      .then(doc => {
-        //console.log(doc.data().List.split("#"))
-        doc
-          .data()
-          .List.split("#")
-          .forEach(LstItem => {
-            //console.log(user)
-            this.Owners.push(LstItem);
-          });
-      });
-
-    ListRef.doc("Statuses")
-      .get()
-      .then(doc => {
-        //console.log(doc.data().List.split("#"))
-        doc
-          .data()
-          .List.split("#")
-          .forEach(LstItem => {
-            //console.log(user)
-            this.Statuses.push(LstItem);
-          });
-      });
+      }); 
   }
 };
 </script>

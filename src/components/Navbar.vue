@@ -4,7 +4,7 @@
         <span style="margin-left:20px" class="brand-logo left hide-on-small-only">IQConcepts team tasks</span>
       <ul id="nav-mobile" class="right">       
         <li><router-link to="/" >View Dashboard</router-link></li>
-        <li v-if="isLoggedIn"><router-link to="/view/cols" class="">View per owner</router-link></li>  
+        <li v-if="isLoggedIn"><router-link to="/view/cols" class="">Active per owner</router-link></li>  
         <li v-if="!isLoggedIn"><router-link to="/login" class="">Login</router-link></li>
         <!-- <li v-if="!isLoggedIn"><router-link to="/register" class="">Register</router-link></li> -->
         <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button></li>
