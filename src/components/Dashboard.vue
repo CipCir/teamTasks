@@ -6,8 +6,8 @@
         <h6 class="col m2 s12">Environment</h6>
         <h6 class="col m2 s12">Status</h6>
         <h6 class="col m2 s12">Deadline</h6>
-        <h6 class="col m2 s12"><span class="chip">Owner</span></h6>
-        <h6 class="secondary-content white-text">Edit</h6>
+        <h6 class="col"><span class="chip">Owner</span></h6>
+        <h6 class="col m1"><span class="secondary-content white-text"> Edit</span></h6>
     </div>
     <div v-bind:class="[{'Completed':task.task_completed},{'Canceled':task.task_canceled},{'inProgress':task.task_inProgress}]" v-for="task in tasks" v-bind:key="task.id" class="row z-depth-2">        
         <div class="col m2 s12"><b>{{task.task_name}}</b></div>
@@ -15,9 +15,9 @@
         <div class="col m2 s12"><b>{{task.task_env}}</b></div>
         <div class="col m2 s12"><i>{{task.task_status}}</i></div>
         <div class="col m2 s12">{{task.task_deadline}}</div>
-        <div class="col m2 s12"><div class="chip">{{task.task_owner}}</div></div>
-        <router-link v-if="isLoggedIn" class="secondary-content" v-bind:to="{name:'edit-task',params:{task_id:task.id}}">
-          <i class="fas fa-edit"></i>
+        <div class="col"><div class="chip">{{task.task_owner}}</div></div>
+        <router-link v-if="isLoggedIn" class="col m1 secondary-content" v-bind:to="{name:'edit-task',params:{task_id:task.id}}">
+          <i class="fas fa-edit secondary-content"></i>
         </router-link>         
     </div>    
 
@@ -140,6 +140,7 @@ export default {
 }
 .secondary-content {
   margin-right: 5px;
+      float: right;
 }
 .row {
   margin-bottom: 5px !important;
