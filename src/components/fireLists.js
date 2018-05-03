@@ -2,6 +2,7 @@ import db from "./firebaseInit";
 
 var Owners = [];
 var Statuses = [];
+var Envs=[];
 const ListRef = db.collection("DropDowns");
 
 ListRef.doc("Owners")
@@ -28,7 +29,19 @@ ListRef.doc("Statuses")
       });
   });
 
+ListRef.doc("Envmts")
+  .get()
+  .then(doc => {        
+    doc
+      .data()
+      .List.split("#")
+      .forEach(LstItem => {            
+        Envs.push(LstItem);
+      });
+  });
+
 export default {
   ownersList: Owners,
-  statusesList:Statuses
+  statusesList:Statuses,
+  envsList:Envs
 };

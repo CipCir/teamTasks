@@ -16,7 +16,16 @@
               required />
             <label for="textarea1" class="active">Details:</label>
           </div>
-        </div>        
+        </div>
+         <div class="row">
+          <div class="input-field col s12">
+            <select style="display:block" required v-model="task_env">              
+              <option v-for="envm in Envmts" v-bind:key="envm.id"
+                v-bind:value="envm">{{envm}}</option>
+            </select>
+            <label class="active">Environment:</label>
+          </div>
+        </div> 
         <div class="row">
           <div class="input-field col s12">
             <input type="date" placeholder="Task deadline"
@@ -59,11 +68,13 @@ export default {
     return {
       task_name: null,
       task_details: null,
+      task_env: null,
       task_deadline: null,
       task_owner: null,
       task_status: null,
       Statuses: fireList.statusesList,
-      Owners: fireList.ownersList
+      Owners: fireList.ownersList,
+      Envmts:fireList.envsList
     };
   },
   methods: {
@@ -73,6 +84,7 @@ export default {
         .add({
           tName: this.task_name,
           tDescription: this.task_details,
+          tEnv:this.task_env,
           tOwner: this.task_owner,
           tDeadline: this.task_deadline,
           tStatus: this.task_status

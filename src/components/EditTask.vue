@@ -16,7 +16,16 @@
               required />
             <label for="textarea1" class="active">Details:</label>
           </div>
-        </div>        
+        </div>   
+         <div class="row">
+          <div class="input-field col s12">
+           <select style="display:block" v-model="task_env">
+              <option v-for="env in Envmts" v-bind:key="env.id"
+                v-bind:value="env">{{env}}</option>
+            </select>
+            <label class="active">Environment:</label>
+          </div>
+        </div>
         <div class="row">
           <div class="input-field col s12">
             <input type="date" placeholder="Task deadline"
@@ -60,16 +69,19 @@ export default {
     return {
       task_name: null,
       task_details: null,
+      task_env: null,
       task_deadline: null,
       task_owner: null,
       task_status: null,
       orig_task_name: null,
       orig_task_details: null,
+      orig_task_env: null,
       orig_task_deadline: null,
       orig_task_owner: null,
       orig_task_status: null,      
       Owners:fireList.ownersList,
-      Statuses:fireList.statusesList
+      Statuses:fireList.statusesList,
+      Envmts:fireList.envsList
     };
   },
   methods: {
@@ -80,6 +92,7 @@ export default {
         .set({
           tName: this.task_name,
           tDescription: this.task_details,
+          tEnv:this.task_env,
           tDeadline: this.task_deadline,
           tOwner: this.task_owner,
           tStatus: this.task_status
@@ -102,6 +115,15 @@ export default {
               this.orig_task_details +
               "##" +
               this.task_details +
+              "||";
+          }
+          if (this.orig_task_env != this.task_env) {
+            ChangedInfo =
+              ChangedInfo +
+              "Environment:" +
+              this.orig_task_env +
+              "##" +
+              this.task_env +
               "||";
           }
           if (this.orig_task_deadline != this.task_deadline) {
@@ -137,7 +159,7 @@ export default {
             db
               .collection("Log")
               .add({
-                date: new Date().toString().slice(0,9) +" "+new Date(new Date()).toString().split(' ')[4],
+                date: new Date().toString().slice(0,10) +" "+new Date(new Date()).toString().split(' ')[4],
                 tName: this.task_name,
                 updated: ChangedInfo.slice(0, -2),
                 user: firebase.auth().currentUser.email
@@ -161,11 +183,13 @@ export default {
       .then(doc => {
         this.task_name = doc.data().tName;
         this.task_details = doc.data().tDescription;
+        this.task_env = doc.data().tEnv;
         this.task_deadline = doc.data().tDeadline;
         this.task_owner = doc.data().tOwner;
         this.task_status = doc.data().tStatus;
         this.orig_task_name = this.task_name;
         this.orig_task_details = this.task_details;
+        this.orig_task_env = this.task_env;
         this.orig_task_deadline = this.task_deadline;
         this.orig_task_owner = this.task_owner;
         this.orig_task_status = this.task_status;

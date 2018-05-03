@@ -3,6 +3,7 @@
     <div class="row z-depth-3 teal white-text hide-on-small-only">      
         <h6 class="col m2 s12">Task name</h6>
         <h6 class="col m2 s12">Description</h6>
+        <h6 class="col m2 s12">Environment</h6>
         <h6 class="col m2 s12">Status</h6>
         <h6 class="col m2 s12">Deadline</h6>
         <h6 class="col m2 s12"><span class="chip">Owner</span></h6>
@@ -11,6 +12,7 @@
     <div v-bind:class="[{'Completed':task.task_completed},{'Canceled':task.task_canceled},{'inProgress':task.task_inProgress}]" v-for="task in tasks" v-bind:key="task.id" class="row z-depth-2">        
         <div class="col m2 s12"><b>{{task.task_name}}</b></div>
         <div class="col m2 s12" v-html="task.task_description"></div>
+        <div class="col m2 s12"><b>{{task.task_env}}</b></div>
         <div class="col m2 s12"><i>{{task.task_status}}</i></div>
         <div class="col m2 s12">{{task.task_deadline}}</div>
         <div class="col m2 s12"><div class="chip">{{task.task_owner}}</div></div>
@@ -74,6 +76,7 @@ export default {
             id: doc.id,
             task_name: doc.data().tName,
             task_description: doc.data().tDescription.replace(/\n/g, "<br/>"),
+            task_env: doc.data().tEnv,
             task_deadline: doc.data().tDeadline,
             task_owner: doc.data().tOwner,
             task_status: doc.data().tStatus,
